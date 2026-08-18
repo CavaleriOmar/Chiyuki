@@ -1,0 +1,33 @@
+name: Generate ISO
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-iso:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: read
+
+    steps:
+      - name: Checkout del codice
+        uses: actions/checkout@v4
+
+      - name: Genera ISO
+        uses: ublue-os/build-iso@v1
+        with:
+          image_name: mia-immagine-custom
+          image_tag: latest
+          image_repo: ghcr.io/kasull-454
+          version: 44 # Versione di Fedora/Universal Blue di partenza
+          iso_name: chiyuki-latest.iso
+
+      - name: Carica l'ISO negli Artifacts di GitHub
+        uses: actions/upload-artifact@v4
+        with:
+          name: ISO-Avviabile
+          path: ./*.iso
