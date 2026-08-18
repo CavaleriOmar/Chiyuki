@@ -45,7 +45,7 @@ jobs:
                               cGRUemRHNEpPZVEvTW5rY3RFOTFrYlplL2lETStwZWVUWjNnaitBQ2xFb3U2YjE4
                               L2JYVDhMTUdWak9aRVl3SXAvWmYxSXRIRFE9PSJ9
                               -----END ENCRYPTED SIGSTORE PRIVATE KEY-----
-          cosign_password: 357357
+          cosign_password: '357357'
           registry_token: ${{ github.token }}
           pr_event_number: ${{ github.event.number }}
 
