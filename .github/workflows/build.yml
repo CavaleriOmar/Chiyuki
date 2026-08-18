@@ -34,17 +34,18 @@ jobs:
         uses: blue-build/github-action@v1.11
         with:
           recipe: ${{ matrix.recipe }}
-          cosign_private_key: -----BEGIN ENCRYPTED SIGSTORE PRIVATE KEY-----
-                              eyJrZGYiOnsibmFtZSI6InNjcnlwdCIsInBhcmFtcyI6eyJOIjo2NTUzNiwiciI6
-                              OCwicCI6MX0sInNhbHQiOiJQaWdQNGhZLzN3bTdzSk82NDVqZG5ZRlJDdXAzWmFv
-                              RW9mWDRUUzIzd3RzPSJ9LCJjaXBoZXIiOnsibmFtZSI6Im5hY2wvc2VjcmV0Ym94
-                              Iiwibm9uY2UiOiIxVkExeEw1MDRxN2huV0o0T2xaa0ptNUtUcjdza2p4USJ9LCJj
-                              aXBoZXJ0ZXh0Ijoic1lrbVp6ZmxMeGtVc1ltVjY1L1lWNFpEdUhOZGYwUWJsMGNu
-                              d0RCRTFUVGdRR0RpVmtCdGx4Rk9RWnRCNEVCY0hqcjRjRGVQQlZ6LytacWFUWG42
-                              MWFEV2FaRkorM2RVSXZ0TUNIVVJ6MkxSaTI4YkFHVTYvQ3RKT0pPVTJPeGNPVkJG
-                              cGRUemRHNEpPZVEvTW5rY3RFOTFrYlplL2lETStwZWVUWjNnaitBQ2xFb3U2YjE4
-                              L2JYVDhMTUdWak9aRVl3SXAvWmYxSXRIRFE9PSJ9
-                              -----END ENCRYPTED SIGSTORE PRIVATE KEY-----
+          cosign_private_key:
+-----BEGIN ENCRYPTED SIGSTORE PRIVATE KEY-----
+eyJrZGYiOnsibmFtZSI6InNjcnlwdCIsInBhcmFtcyI6eyJOIjo2NTUzNiwiciI6
+OCwicCI6MX0sInNhbHQiOiJQaWdQNGhZLzN3bTdzSk82NDVqZG5ZRlJDdXAzWmFv
+RW9mWDRUUzIzd3RzPSJ9LCJjaXBoZXIiOnsibmFtZSI6Im5hY2wvc2VjcmV0Ym94
+Iiwibm9uY2UiOiIxVkExeEw1MDRxN2huV0o0T2xaa0ptNUtUcjdza2p4USJ9LCJj
+aXBoZXJ0ZXh0Ijoic1lrbVp6ZmxMeGtVc1ltVjY1L1lWNFpEdUhOZGYwUWJsMGNu
+d0RCRTFUVGdRR0RpVmtCdGx4Rk9RWnRCNEVCY0hqcjRjRGVQQlZ6LytacWFUWG42
+MWFEV2FaRkorM2RVSXZ0TUNIVVJ6MkxSaTI4YkFHVTYvQ3RKT0pPVTJPeGNPVkJG
+cGRUemRHNEpPZVEvTW5rY3RFOTFrYlplL2lETStwZWVUWjNnaitBQ2xFb3U2YjE4
+L2JYVDhMTUdWak9aRVl3SXAvWmYxSXRIRFE9PSJ9
+-----END ENCRYPTED SIGSTORE PRIVATE KEY-----
           registry_token: ${{ github.token }}
           pr_event_number: ${{ github.event.number }}
 
