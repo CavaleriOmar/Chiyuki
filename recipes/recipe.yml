@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 # --- LA MIA DISTRO
 # Nata in risposta a Nobara, non a caso ho scelto una mia waifu per il nome
 # Potrebbe passare a Balalaika, Roberta, Medusa... o anche Aizen... o persino essre il primo passo per il mio sogno, Vesta
@@ -27,7 +28,6 @@ modules:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
 
-# ---
 # --- REPO E COPR
   - type: dnf
     install:
@@ -35,10 +35,15 @@ modules:
 #-?        - dnf5-plugin-copr
         - dnf-plugins-core
 
+#
+  - type: script
+    snippets:
+      - |
+        sudo dnf install -y --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release terra-gpg-keys
+
   - type: dnf
     repos:
       files:
-#        - https://terra.fyralabs.com/terra.repo
         - https://repo.rakuos.org/rakuos.repo
       copr:
         - ama1470/kwin-effects-glass
@@ -52,23 +57,22 @@ modules:
         - joviatrix/winboat
         - linuxgamerlife/lgl-scxctl-manager
         - predze/ludora
+        - scujas/plasma-applet-appgrid
+        - ublue-os/akmods
         - ublue-os/bazzite
-#      nonfree: negativo17
+#      nonfree: negativo17 --- NON USARE
 
 # --- INSTALLAZIONE e RIMOZIONE PACCHETTI
   - type: dnf
     remove:
       packages:
-        - kernel
-        - kernel-core
-        - kernel-modules
-        - kernel-modules-extra
         - tuned
         - tuned-ppd
         - zram-generator-defaults
     install:
       packages:
         - ananicy-cpp
+        - bazzite-portal
         - bore-sysctl
         - btop
         - cachyos-ananicy-rules
@@ -87,11 +91,8 @@ modules:
         - gamescope
         - kcm_systemd
 #        - kcm_ublue
-        - kernel-cachyos
-        - kernel-cachyos-core
-        - kernel-cachyos-modules
+#        - kernel-p03
         - klassy
-        - kmod-xone
         - kwin-effects-better-blur-dx
         - kwin-effects-glass
 #        - kwrite
@@ -100,6 +101,7 @@ modules:
         - lgl-scxctl-manager
 #        - lm_sensors
         - micro
+        - plasma-applet-appgrid
         - plasma-discover
         - plasma-discover-flatpak
         - plasma-discover-kns
@@ -118,9 +120,12 @@ modules:
         - starship
         - sysctl
 #        - tailscale
+        - terra-release-extras
+        - terra-release-mesa
+#        - terra-release-multimedia --- DA ASPETTARE
         - tlp
-        - v4l2loopback
-        - xone-kmod-common
+#        - xone-kmod
+#        - xone-kmod-common
 #        - zsh
 
 # --- FLATPAK
@@ -143,14 +148,14 @@ modules:
 #        scope: user # Also add Flathub user repo, but no user packages
 
 # --- SCRIPT VARI
-  - type: script
-    scripts:
+#  - type: script
+#    scripts:
+#      - install-bazzite-kernel.sh
 #      - install-cachyos-kernel.sh
-      - oh-my-zsh.sh
+#      - install-kernel-p03.sh
+#      - oh-my-zsh.sh
 
-# --- SYSTEMD
-  - type: systemd
-    system:
-      enabled: []
-
+# --- FIRMA
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
+
+# --- FINE
