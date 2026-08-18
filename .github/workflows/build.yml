@@ -38,7 +38,7 @@ jobs:
           registry_username: Kasull-454
           registry: ghcr.io
           registry_namespace: Kasull-454
-      env:
+        env:
           cosign_private_key: ${{ secrets.COSIGN_PRIVATE_KEY }}
           registry_token: ${{ github.token }}
           pr_event_number: ${{ github.event.number }}
