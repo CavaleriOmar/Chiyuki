@@ -32,6 +32,9 @@ jobs:
       # the build is fully handled by the reusable github action
       - name: Build Custom Image
         uses: blue-build/github-action@v1.11
+        run: |
+             BUILD_OPTS=("--no-sign")
+             bluebuild build -v "${BUILD_OPTS[@]}" ./recipes/recipe.yml
         with:
           recipe: ${{ matrix.recipe }}
           cosign_private_key: ${{ secrets.COSIGN_PRIVATE_KEY }}
