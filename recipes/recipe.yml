@@ -1,36 +1,168 @@
 ---
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 # image will be published to ghcr.io/<user>/<name>
-name: Chiyuki
+name: chiyuki
 # description will be included in the image's metadata
 description: This is my personal OS image.
-
 # the base image to build on top of (FROM) and the version tag to use
-base-image: ghcr.io/ublue-os/silverblue-main
+base-image: ghcr.io/ublue-os/aurora
 image-version: latest # You can pin to a specific version of Fedora as well
 
 # module configuration, executed in order
 # you can include multiple instances of the same module
 modules:
+
+  - type: os-release
+    properties:
+      ID: chiyuki
+      NAME: Chiyuki
+      PRETTY_NAME: Chiyuki (AuroraOS)
+      DEFAULT_HOSTNAME: chiyuki
+      HOME_URL: https://github.com/CavaleriOmar/Chiyuki
+      SUPPORT_URL: https://github.com/CavaleriOmar/Chiyuki/issues
+      BUG_REPORT_URL: https://github.com/CavaleriOmar/Chiyuki/issues
+
   - type: files
     files:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
 
+#  - type: script
+#    scripts:
+#      - install-lix.sh
+#      - oh-my-zsh.sh
+# Sostituisci il modulo script di oh-my-zsh con questo snippet:
+
+  - type: script
+    snippets:
+      - |
+        # Installazione automatica di Oh My Zsh
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+      
+  - type: script
+    snippets:
+      - |
+        set -ex
+
+        # 1. Installa il plugin COPR (richiesto da DNF5 su Fedora recente)
+        dnf install -y dnf5-plugin-copr || dnf install -y dnf-plugins-core
+
+        # 2. Abilita il repository COPR
+        dnf copr enable -y bieszczaders/kernel-cachyos
+
+        # 3. Disabilita temporaneamente l'hook dracut
+        chmod -x /usr/lib/kernel/install.d/05-rpmostree.install 2>/dev/null || true
+
+        # 4. Installa il nuovo kernel
+        dnf install -y kernel-cachyos kernel-cachyos-core kernel-cachyos-modules
+
+        # 5. Configura il nuovo kernel
+        KVER=$(ls /usr/lib/modules | grep cachyos | tail -n 1)
+        if [ -z "$KVER" ]; then
+          echo "ERRORE: Kernel CachyOS non trovato in /usr/lib/modules!"
+          exit 1
+        fi
+
+        depmod -a "$KVER"
+        chmod +x /usr/lib/kernel/install.d/05-rpmostree.install 2>/dev/null || true
+        /usr/bin/kernel-install add "$KVER" "/usr/lib/modules/$KVER/vmlinuz"
+
+        # 6. Rimuovi il kernel originale Fedora
+        dnf remove -y kernel kernel-core kernel-modules
+
+  - type: script
+    snippets:
+      - |
+        sudo rpm --import https://repo.rakuos.org/pubkey.gpg
+        sudo dnf config-manager --add-repo https://repo.rakuos.org/rakuos.repo
+
   - type: dnf
     repos:
       copr:
+        - ama1470/kwin-effects-glass
         - atim/starship
+        - bieszczaders/kernel-cachyos
+        - bieszczaders/kernel-cachyos-addons
+        - deltacopy/darkly
+        - errornointernet/klassy
+        - infinality/kwin-effects-better-blur-dx
+        - joviatrix/winboat
+        - linuxgamerlife/lgl-scxctl-manager
+        - predze/ludora
+        - ublue-os/bazzite
+
+  - type: script
+    snippets:
+      - |
+        # 1. Rimuovi il pacchetto in conflitto
+        dnf remove -y zram-generator-defaults
+
+        # 2. Installa cachyos-settings (aggiungendo --allowerasing per sicurezza)
+        dnf install -y --allowerasing cachyos-settings
+
+  - type: script
+    snippets:
+      - |
+        sudo dnf install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release terra-gpg-keys
+
+  - type: dnf
     install:
       packages:
+        - ananicy-cpp
+        - bore-sysctl
+        - btop
+        - cachyos-ananicy-rules
+        - cachyos-ksm-settings
+        - cachyos-settings
+        - coolercontrol
+        - coolercontrold
+        - curl
+        - darkly
+        - dmemcg-booster
+        - fancontrol-gui
+        - fancontrol-gui-kcm
+        - fancontrol-gui-plasmoid
+        - flatpak-kcm
+        - floorp
+        - gamescope
+        - kcm_systemd
+        - kcm_ublue
+        - klassy
+        - kwin-effects-better-blur-dx
+        - kwin-effects-glass
+        - kwrite
+        - lact
+        - langpacks-it
+        - lgl-scxctl-manager
+        - lm_sensors
         - micro
+        - plasma-discover
+        - plasma-discover-flatpak
+        - plasma-discover-kns
+        - plasma-discover-libs
+        - plasma-discover-notifier
+        - plasma-discover-offline-updates
+        - plasma-discover-rpm-ostree
+        - python3
+        - python3-pip
+        - rustup
+        - ryzenadj
+        - scx-manager
+        - scx-scheds
+        - scx-tools
+        - scxctl
         - starship
+        - sysctl
+        - tailscale
+        - tlp
+        - zsh
+
     remove:
       packages:
         # example: removing firefox (in favor of the flatpak)
         # "firefox" is the main package, "firefox-langpacks" is a dependency
-        - firefox
-        - firefox-langpacks # also remove firefox dependency (not required for all packages, this is a special case)
+        - tuned
+        - tuned-ppd
 
   - type: default-flatpaks
     configurations:
@@ -38,8 +170,26 @@ modules:
         scope: system
         # If no repo information is specified, Flathub will be used by default
         install: # system flatpaks we want all users to have and not remove
-          - org.mozilla.firefox
-          - org.gnome.Loupe
-      - scope: user # Also add Flathub user repo, but no user packages
+        - io.github.kolunmi.Bazaar
+        - io.github.N3kosempai.klia-store
+        - io.github.prateekmedia.appimagepool
+        - io.github.getnf.embellish
+        - xyz.ketok.Speedtest
+        - com.pot_app.pot
+        - page.codeberg.JakobDev.jdFlatpakSnapshot
+#        - page.codeberg.jakobdev.jdsystemmonitor
+
+        remove: # replace default Firefox with Waterfox
+        - org.mozilla.firefox
+#        scope: user # Also add Flathub user repo, but no user packages
+
+#  - type: script
+#    snippets:
+#      - |
+#        curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+
+  - type: systemd
+    system:
+      enabled: []
 
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
