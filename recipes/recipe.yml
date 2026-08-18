@@ -15,7 +15,7 @@ modules:
   - type: os-release
     properties:
       ID: chiyuki
-      NAME: Chiyuki
+      NAME: chiyuki
       PRETTY_NAME: Chiyuki (AuroraOS)
       DEFAULT_HOSTNAME: chiyuki
       HOME_URL: https://github.com/CavaleriOmar/Chiyuki
