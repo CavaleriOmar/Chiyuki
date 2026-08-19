@@ -1,6 +1,8 @@
 ---
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+# ===================================================================================
 # --- LA MIA DISTRO
+# ===================================================================================
 # Nata in risposta a Nobara, non a caso ho scelto una mia waifu per il nome
 # Potrebbe passare a Balalaika, Roberta, Medusa... o anche Aizen... o persino essre il primo passo per il mio sogno, Vesta
 name: chiyuki
@@ -13,38 +15,61 @@ image-version: latest # You can pin to a specific version of Fedora as well
 # module configuration, executed in order
 modules:
 
+# ===================================================================================
+# --- OS RELEASE
+# ===================================================================================
   - type: os-release
     properties:
       ID: chiyuki
+      VERSION_ID: 44
+      VERSION_CODENAME: Aaroniero # I versione - da Bleach
       NAME: chiyuki
       PRETTY_NAME: Chiyuki (AuroraOS)
+#      LOGO: fedora-logo-icon
       DEFAULT_HOSTNAME: chiyuki
       HOME_URL: https://github.com/CavaleriOmar/Chiyuki
       SUPPORT_URL: https://github.com/CavaleriOmar/Chiyuki/issues
       BUG_REPORT_URL: https://github.com/CavaleriOmar/Chiyuki/issues
 
+# ===================================================================================
+# --- FILES
+# ===================================================================================
   - type: files
     files:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
 
-# --- REPO E COPR
+# ===================================================================================
+# --- PRE-INSTALLAZIONE
+# ===================================================================================
   - type: dnf
     install:
       packages:
 #-?        - dnf5-plugin-copr
         - dnf-plugins-core
 
-#
+# ===================================================================================
+# --- REPO TERRA
+# ===================================================================================
   - type: script
     snippets:
       - |
         sudo dnf install -y --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release terra-gpg-keys
 
+# ===================================================================================
+# --- REPO RAKUOS
+# ===================================================================================
   - type: dnf
     repos:
       files:
         - https://repo.rakuos.org/rakuos.repo
+#      nonfree: negativo17 --- NON USARE
+
+# ===================================================================================
+# --- COPR da abilitare
+# ===================================================================================
+  - type: dnf
+    repos:
       copr:
         - ama1470/kwin-effects-glass
         - atim/starship
@@ -60,94 +85,151 @@ modules:
         - scujas/plasma-applet-appgrid
         - ublue-os/akmods
         - ublue-os/bazzite
-#      nonfree: negativo17 --- NON USARE
 
-# --- INSTALLAZIONE e RIMOZIONE PACCHETTI
+# ===================================================================================
+# --- RIMOZIONE PACCHETTI
+# ===================================================================================
   - type: dnf
     remove:
       packages:
+        - fcitx5
+        - firefox
+        - flatpak-kcm
+        - input-remapper-gtk
+        - plasma-settings
+        - sunshine
         - tuned
         - tuned-ppd
         - zram-generator-defaults
+
+# ===================================================================================
+# --- KERNEL & SCHEDULER
+# ===================================================================================
+  - type: dnf
     install:
       packages:
         - ananicy-cpp
-        - bazzite-portal
         - bore-sysctl
-        - btop
+        - btrfs-assistant
         - cachyos-ananicy-rules
         - cachyos-ksm-settings
         - cachyos-settings
-        - coolercontrol
-        - coolercontrold
-#        - curl
-        - darkly
 #        - dmemcg-booster
-        - fancontrol-gui
-        - fancontrol-gui-kcm
-        - fancontrol-gui-plasmoid
-#        - flatpak-kcm
-        - floorp
-        - gamescope
-        - kcm_systemd
-#        - kcm_ublue
 #        - kernel-p03
-        - klassy
-        - kwin-effects-better-blur-dx
-        - kwin-effects-glass
-#        - kwrite
-        - lact
-        - langpacks-it
         - lgl-scxctl-manager
 #        - lm_sensors
-        - micro
-        - plasma-applet-appgrid
-        - plasma-discover
-        - plasma-discover-flatpak
-        - plasma-discover-kns
-        - plasma-discover-libs
-        - plasma-discover-notifier
-#        - plasma-discover-offline-updates
-        - plasma-discover-rpm-ostree
-#        - python3
-        - python3-pip
-        - rustup
-        - ryzenadj
-        - scx-manager
         - scx-scheds
         - scx-tools
         - scxctl
-        - starship
         - sysctl
-#        - tailscale
+#        - xone-kmod
+#        - xone-kmod-common
+
+# ===================================================================================
+# --- PACCHETTI BASE FONDAMENTALI
+# ===================================================================================
+  - type: dnf
+    install:
+      packages:
+        - btop
+#        - curl
+        - floorp
+        - langpacks-it
+        - micro
+        - python3-pip
+        - rustup
+        - ryzenadj
+        - starship
         - terra-release-extras
         - terra-release-mesa
 #        - terra-release-multimedia --- DA ASPETTARE
         - tlp
-#        - xone-kmod
-#        - xone-kmod-common
 #        - zsh
 
-# --- FLATPAK
+# ===================================================================================
+# --- PACCHETTI EXTRA
+# ===================================================================================
+  - type: dnf
+    install:
+      packages:
+        - winboat
+
+# ===================================================================================
+# --- PACCHETTI KDE PLASMA
+# ===================================================================================
+  - type: dnf
+    install:
+      packages:
+        - darkly
+#        - fancontrol-gui
+        - fancontrol-gui-kcm
+        - fancontrol-gui-plasmoid
+        - kcalc
+        - kcm_gamecontroller
+        - kcm_systemd
+#        - kcm_ublue
+        - kdenlive
+        - klassy
+        - kunifiedpush
+        - kwin-effects-better-blur-dx
+        - kwin-effects-glass
+#        - kwrite
+        - okular
+        - plasma-applet-appgrid
+        - plasma-discover
+#        - plasma-discover-flatpak
+        - plasma-discover-kns
+        - plasma-discover-libs
+        - plasma-discover-notifier
+#        - plasma-discover-offline-updates
+#        - plasma-discover-rpm-ostree
+
+# ===================================================================================
+# --- PACCHETTI GAME
+# ===================================================================================
+  - type: dnf
+    install:
+      packages:
+        - bazzite-portal
+        - coolercontrol
+        - coolercontrold
+        - gamescope
+        - lact
+        - yafti
+
+# ===================================================================================
+# --- PULIZIA FLATPAK INDESIDERATI
+# ===================================================================================
+  - type: default-flatpaks
+    configurations:
+      - notify: true # Send notification after install/uninstall is finished (true/false)
+        scope: system
+        remove: # replace default Firefox with Waterfox
+        - org.kde.kcalc
+        - org.kde.okular
+#        scope: user # Also add Flathub user repo, but no user packages
+
+# ===================================================================================
+# --- FLATPAK DI SISTEMA
+# ===================================================================================
   - type: default-flatpaks
     configurations:
       - notify: true # Send notification after install/uninstall is finished (true/false)
         scope: system
         # If no repo information is specified, Flathub will be used by default
         install: # system flatpaks we want all users to have and not remove
-        - io.github.kolunmi.Bazaar
+        - com.clustta.clustta
+#        - io.github.kolunmi.Bazaar
         - io.github.N3kosempai.klia-store
         - io.github.prateekmedia.appimagepool
         - io.github.getnf.embellish
-        - xyz.ketok.Speedtest
-        - com.pot_app.pot
-        - page.codeberg.JakobDev.jdFlatpakSnapshot
 #        - page.codeberg.jakobdev.jdsystemmonitor
-        remove: # replace default Firefox with Waterfox
-        - org.mozilla.firefox
+        - xyz.ketok.Speedtest
 #        scope: user # Also add Flathub user repo, but no user packages
 
+# ===================================================================================
 # --- SCRIPT VARI
+# ===================================================================================
 #  - type: script
 #    scripts:
 #      - install-bazzite-kernel.sh
@@ -155,7 +237,9 @@ modules:
 #      - install-kernel-p03.sh
 #      - oh-my-zsh.sh
 
+# ===================================================================================
 # --- FIRMA
+# ===================================================================================
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
 
 # --- FINE
