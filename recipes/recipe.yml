@@ -85,6 +85,8 @@ modules:
         - scujas/plasma-applet-appgrid
         - ublue-os/akmods
         - ublue-os/bazzite
+        - ublue-os/staging
+        - ublue-os/packages
 
 # ===================================================================================
 # --- RIMOZIONE PACCHETTI
@@ -134,17 +136,31 @@ modules:
         - btop
 #        - curl
         - floorp
+        - fwupd
         - langpacks-it
         - micro
         - python3-pip
         - rustup
         - ryzenadj
+#        - supergfxctl
         - starship
         - terra-release-extras
         - terra-release-mesa
 #        - terra-release-multimedia --- DA ASPETTARE
         - tlp
 #        - zsh
+
+# ===================================================================================
+# --- PACCHETTI UBLUE
+# ===================================================================================
+  - type: dnf
+    install:
+      packages:
+        - bazzite-portal
+        - topgrade
+        - ublue-brew
+        - ublue-fastfetch
+#        - yafti - da installare con pip
 
 # ===================================================================================
 # --- PACCHETTI EXTRA
@@ -170,6 +186,7 @@ modules:
 #        - kcm_ublue
         - kdenlive
         - klassy
+#        - krunner-yafti - dà un problema di dipendenze
 #        - kunifiedpush
         - kwin-effects-better-blur-dx
         - kwin-effects-glass
@@ -183,6 +200,7 @@ modules:
         - plasma-discover-notifier
 #        - plasma-discover-offline-updates
 #        - plasma-discover-rpm-ostree
+#        - supergfxctl-plasmoid
 
 # ===================================================================================
 # --- PACCHETTI GAME
@@ -190,12 +208,10 @@ modules:
   - type: dnf
     install:
       packages:
-        - bazzite-portal
         - coolercontrol
         - coolercontrold
         - gamescope
         - lact
-        - yafti
 
 # ===================================================================================
 # --- PULIZIA FLATPAK INDESIDERATI
