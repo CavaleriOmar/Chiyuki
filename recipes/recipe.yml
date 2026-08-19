@@ -21,8 +21,8 @@ modules:
   - type: os-release
     properties:
       ID: chiyuki
-      VERSION_ID: 44
-      VERSION_CODENAME: Aaroniero # I versione - da Bleach
+#      VERSION_ID: 44
+      VERSION_CODENAME: Aaroniero # personaggi di Bleach per la 0.x
       NAME: chiyuki
       PRETTY_NAME: Chiyuki (AuroraOS)
 #      LOGO: fedora-logo-icon
@@ -165,12 +165,12 @@ modules:
         - fancontrol-gui-kcm
         - fancontrol-gui-plasmoid
         - kcalc
-        - kcm_gamecontroller
+#        - kcm_gamecontroller
         - kcm_systemd
 #        - kcm_ublue
         - kdenlive
         - klassy
-        - kunifiedpush
+#        - kunifiedpush
         - kwin-effects-better-blur-dx
         - kwin-effects-glass
 #        - kwrite
