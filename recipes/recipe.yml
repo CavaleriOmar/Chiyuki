@@ -1,10 +1,11 @@
 ---
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
-# ===================================================================================
-# --- LA MIA DISTRO
-# ===================================================================================
+# ==================================================================================
+# === LA MIA DISTRO ================================================================
+# ==================================================================================
 # Nata in risposta a Nobara, non a caso ho scelto una mia waifu per il nome
-# Potrebbe passare a Balalaika, Roberta, Medusa... o anche Aizen... o persino essre il primo passo per il mio sogno, Vesta
+# Potrebbe passare a Balalaika, Roberta, Medusa... o anche Aizen... o persino essere
+# il primo passo per il mio sogno, Vesta
 name: chiyuki
 # description will be included in the image's metadata
 description: ISO a uso personale, per test e lavoro.
@@ -15,9 +16,9 @@ image-version: latest # You can pin to a specific version of Fedora as well
 # module configuration, executed in order
 modules:
 
-# ===================================================================================
-# --- OS RELEASE
-# ===================================================================================
+# ==================================================================================
+# === OS RELEASE ===================================================================
+# ==================================================================================
   - type: os-release
     properties:
       ID: chiyuki
@@ -31,45 +32,42 @@ modules:
       SUPPORT_URL: https://github.com/CavaleriOmar/Chiyuki/issues
       BUG_REPORT_URL: https://github.com/CavaleriOmar/Chiyuki/issues
 
-# ===================================================================================
-# --- FILES
-# ===================================================================================
+# ==================================================================================
+# === FILES =======================================================================
+# ==================================================================================
   - type: files
     files:
       - source: system
-        destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
+        destination: / # copies files/system/* (* means everything inside it)
+#                      into your image's root folder /
 
-# ===================================================================================
-# --- PRE-INSTALLAZIONE
-# ===================================================================================
+# ==================================================================================
+# === PRE-INSTALLAZIONE ============================================================
+# ==================================================================================
   - type: dnf
     install:
       packages:
-#-?        - dnf5-plugin-copr
+#-?        - dnf5-plugin-copr => credo sia superfluo
         - dnf-plugins-core
 
-# ===================================================================================
-# --- REPO TERRA
-# ===================================================================================
+# ==================================================================================
+# === REPO RAKUOS e TERRA ==========================================================
+# ==================================================================================
   - type: script
-    snippets:
-      - |
-        sudo dnf install -y --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release terra-gpg-keys
+    scripts:
+      - addrepo-rakuos.sh
+#      - addrepo-terra.sh
 
-# ===================================================================================
-# --- REPO RAKUOS
-# ===================================================================================
+# ==================================================================================
+# === PACCHETTI - REPO - COPR ======================================================
+# ==================================================================================
   - type: dnf
     repos:
+#      cleanup: true => disabilita i COPR dopo l'uso, credo
       files:
+#        - https://repo.protonvpn.com/fedora-44-stable/protonvpn-stable-release.repo
+#        => dà errore 404
         - https://repo.rakuos.org/rakuos.repo
-#      nonfree: negativo17 --- NON USARE
-
-# ===================================================================================
-# --- COPR da abilitare
-# ===================================================================================
-  - type: dnf
-    repos:
       copr:
         - ama1470/kwin-effects-glass
         - atim/starship
@@ -87,11 +85,7 @@ modules:
         - ublue-os/bazzite
         - ublue-os/staging
         - ublue-os/packages
-
-# ===================================================================================
-# --- RIMOZIONE PACCHETTI
-# ===================================================================================
-  - type: dnf
+# === PULIZIA PACCHETTI INDESIDERATI ===============================================
     remove:
       packages:
         - fcitx5
@@ -103,38 +97,32 @@ modules:
         - tuned
         - tuned-ppd
         - zram-generator-defaults
-
-# ===================================================================================
-# --- KERNEL & SCHEDULER
-# ===================================================================================
-  - type: dnf
+# === INSTALLAZIONE PACCHETTI ======================================================
     install:
+      skip-unavailable: true
       packages:
+# === KERNEL & SCHEDULER ===========================================================
         - ananicy-cpp
         - bore-sysctl
         - btrfs-assistant
         - cachyos-ananicy-rules
         - cachyos-ksm-settings
         - cachyos-settings
-#        - dmemcg-booster
-#        - kernel-p03
+#        - dmemcg-booster => non so
+#        - kernel-p03 => aspettiamo
         - lgl-scxctl-manager
 #        - lm_sensors
+#        => già presente
         - scx-scheds
         - scx-tools
         - scxctl
         - sysctl
 #        - xone-kmod
 #        - xone-kmod-common
-
-# ===================================================================================
-# --- PACCHETTI BASE FONDAMENTALI
-# ===================================================================================
-  - type: dnf
-    install:
-      packages:
+# === PACCHETTI BASE FONDAMENTALI ==================================================
         - btop
 #        - curl
+#        => già presente
         - floorp
         - fwupd
         - langpacks-it
@@ -142,40 +130,20 @@ modules:
         - python3-pip
         - rustup
         - ryzenadj
-#        - supergfxctl
+#        - supergfxctl => non mi serve con una sola GPU
         - starship
         - terra-release-extras
         - terra-release-mesa
-#        - terra-release-multimedia --- DA ASPETTARE
+#        - terra-release-multimedia => DA ASPETTARE
         - tlp
-#        - zsh
-
-# ===================================================================================
-# --- PACCHETTI UBLUE
-# ===================================================================================
-  - type: dnf
-    install:
-      packages:
+#        - zsh => già presente
+# === PACCHETTI UBLUE ==============================================================
         - bazzite-portal
         - topgrade
         - ublue-brew
         - ublue-fastfetch
 #        - yafti - da installare con pip
-
-# ===================================================================================
-# --- PACCHETTI EXTRA
-# ===================================================================================
-  - type: dnf
-    install:
-      packages:
-        - winboat
-
-# ===================================================================================
-# --- PACCHETTI KDE PLASMA
-# ===================================================================================
-  - type: dnf
-    install:
-      packages:
+# === PACCHETTI KDE PLASMA =========================================================
         - darkly
 #        - fancontrol-gui
         - fancontrol-gui-kcm
@@ -186,52 +154,43 @@ modules:
 #        - kcm_ublue
         - kdenlive
         - klassy
-#        - krunner-yafti - dà un problema di dipendenze
-#        - kunifiedpush
+#        - krunner-yafti => dà un problema di dipendenze
+#        - kunifiedpush => già presente
         - kwin-effects-better-blur-dx
         - kwin-effects-glass
-#        - kwrite
+#        - kwrite => già presente
         - okular
         - plasma-applet-appgrid
         - plasma-discover
-#        - plasma-discover-flatpak
+        - plasma-discover-flatpak
         - plasma-discover-kns
         - plasma-discover-libs
         - plasma-discover-notifier
 #        - plasma-discover-offline-updates
-#        - plasma-discover-rpm-ostree
-#        - supergfxctl-plasmoid
-
-# ===================================================================================
-# --- PACCHETTI GAME
-# ===================================================================================
-  - type: dnf
-    install:
-      packages:
+        - plasma-discover-rpm-ostree
+#        - supergfxctl-plasmoid => ho una sola GPU
+# === PACCHETTI EXTRA ==============================================================
         - coolercontrol
         - coolercontrold
         - gamescope
         - lact
+#        - proton-vpn-gtk-app => per l'errore di cui sopra
+        - winboat
+# === PACCHETTI LOCALI =============================================================
+#        - ./plasma-wallpaper-effects-2.1.0-2.1.noarch.rpm
+#        - ./proton-pass-1.39.1-1.x86_64.rpm
 
-# ===================================================================================
-# --- PULIZIA FLATPAK INDESIDERATI
-# ===================================================================================
+# ==================================================================================
+# === FLATPAK=======================================================================
+# ==================================================================================
   - type: default-flatpaks
     configurations:
       - notify: true # Send notification after install/uninstall is finished (true/false)
         scope: system
+# === PULIZIA FLATPAK INDESIDERATI =================================================
         remove: # replace default Firefox with Waterfox
         - org.kde.kcalc
         - org.kde.okular
-#        scope: user # Also add Flathub user repo, but no user packages
-
-# ===================================================================================
-# --- FLATPAK DI SISTEMA
-# ===================================================================================
-  - type: default-flatpaks
-    configurations:
-      - notify: true # Send notification after install/uninstall is finished (true/false)
-        scope: system
         # If no repo information is specified, Flathub will be used by default
         install: # system flatpaks we want all users to have and not remove
         - com.clustta.clustta
@@ -243,19 +202,20 @@ modules:
         - xyz.ketok.Speedtest
 #        scope: user # Also add Flathub user repo, but no user packages
 
-# ===================================================================================
-# --- SCRIPT VARI
-# ===================================================================================
-#  - type: script
-#    scripts:
+# ==================================================================================
+# === SCRIPT VARI ==================================================================
+# ==================================================================================
+  - type: script
+    scripts:
 #      - install-bazzite-kernel.sh
 #      - install-cachyos-kernel.sh
+      - install-cybergrub-2077.sh
 #      - install-kernel-p03.sh
 #      - oh-my-zsh.sh
 
-# ===================================================================================
-# --- FIRMA
-# ===================================================================================
+# ==================================================================================
+# === FIRMA ========================================================================
+# ==================================================================================
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
 
-# --- FINE
+# === FINE =========================================================================
